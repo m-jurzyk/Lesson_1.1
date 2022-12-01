@@ -1,0 +1,222 @@
+# Geospatial data available at the geojson format
+library(geojsonio)
+spdf <- geojson_read("https://raw.githubusercontent.com/gregoiredavid/france-geojson/master/communes.geojson",  what = "sp")
+
+# Since it is a bit too much data, I select only a subset of it:
+spdf <- spdf[ substr(spdf@data$code,1,2)  %in% c("06", "83", "13", "30", "34", "11", "66") , ]
+# Geospatial data available at the geojson format
+library(geojsonio)
+spdf <- geojson_read("https://raw.githubusercontent.com/gregoiredavid/france-geojson/master/communes.geojson",  what = "sp")
+
+# Since it is a bit too much data, I select only a subset of it:
+spdf <- spdf[ substr(spdf@data$code,1,2)  %in% c("06", "83", "13", "30", "34", "11", "66") , ]
+
+# Mtcars ggplot lesson
+
+mtcars %>% 
+ggplot(aes(x=wt, y=mpg, color=gear))+
+geom_point()
+
+##mtcars konwersja
+
+mtcars$fuel <- 235/mtcars$mpg
+mtcars$mass <- mtcars$wt * 0.4535937
+mtcars
+
+##wykres vol2 
+
+mtcars %>% 
+ggplot(aes(x=mass, y=fuel, color=hp))+
+geom_point()+
+geom_smooth()+
+labs(title="fuel consumption",
+subtitle="mtcars dataset", 
+x= "mass",
+y="l/100km",
+color= "HP")
+
+
++
+theme
+
+library("ggthemes")
+
+#kolorowanie ggplot 
+
+ggplot(faithful) + 
+geom_point(aes(x= eruptions, y=waiting))+
+geom_abline(slope = -40, intercept = 200)
+
+##nowe zadanie
+
+ ggplot(mpg)+
++     geom_bar(aes(x=class), name=count)
+
+ ggplot(data=mpg)+
+ geom_bar(aes(x=class))+
+ coord_polar(theta = 'y')+
+ expand_limits(y=70)+
+ theme_minimal()
+
+
+## Plot composition 
+
+ggplot(data=msleep)+
+geom_point(aes(x=name))
+
+p1 <-  ggplot(msleep)+
+geom_boxplot(aes(x=sleep_total,
+y= vore,
+fill=vore))
+
+## Pobieranie i instalowanie bibliotek 
+
+install.packages("patchwork")
+library(patchwork)
+
+## Teraz możemy na luzaku dodawać różne wykresy obok siebie np.
+p1+p2+p3
+
+## Lub coś takiego 
+
+(p1|p2)/p3          # w tym przypadku wykresy p1 i p2 są obok siebie a pod nimi p3 
+
+# UStawianie theme 
+
+ plot_layout(guides = 'collect')
+ 
+ ## lub takie 
+pall &
+  theme(legend.position = 'none')
+ 
+ 
+## Animacje 
+ 
+ ggplot(data=mpg)+
+ geom_bar(aes(x=factor(cyl)))
+
+
+# do zwykłego grafu dołączę animacje (próba)
+
+ggplot(data=mpg)+
+ geom_bar(aes(x=factor(cyl)))+
+ labs (title='Numbers of car in {closest_state} by number of cylinders')+
+transition_states(states=years)+
+enter_grow()+
+exit_fade()
+
+library(gapminder)
+
+view(gapminder)
+
+# mam błąd zapisu kodu animacji *można spytać matteo 
+
+ggplot(data=mpg)+
+geom_bar(aes(x=factor(cyl)))+
+labs(title= 'Number of cars in {closest_state} by number of cylinders')+
+enter_grow()+
+exit_fade()
+
+## Po wgraniu bibliotek, i puszczeniu wersji ze skryptu zaczęło działać
+
+p1 <- ggplot(data=mpg)+
+    geom_bar(aes(x=factor(cyl)))+
+    labs(title= 'Number of cars in {closest_state} by number of cylinders')+
+    transition_time(time = year)+
+    enter_grow()+
+    exit_fade()
+animate(p1, nframes = 15, renderer = gifski_renderer("p1cyl_gdp.gif"))
+
+## Powyższy kod zapisuje działający gif
+
+ggplot(mpg) + 
+    geom_bar(aes(x = factor(cyl)))
+ggplot(mpg) + 
+    geom_bar(aes(x = factor(cyl))) + 
+    labs(title = 'Number of cars in {closest_state} by number of cylinders') + 
+    transition_states(states = year) + 
+    enter_grow() + 
+    exit_fade()
+    
+    ## tym razem wersja bez zapisu 
+    
+    
+## i zaczynami z innym wykresem animowanym 
+
+ggplot(economics) + 
+    geom_line(aes(x = date, y = unemploy))
+library(gganimate)
+ggplot(economics) + 
+    geom_line(aes(x = date, y = unemploy)) + 
+    transition_reveal(along = date)
+   
+   
+## Wszystkie wymagane biblioteki  
+    
+packages <- c(
+    'ggplot2',
+    'ggrepel',
+    'patchwork',
+    'ggraph',
+    'dplyr',
+    'gganimate',
+    'gifski',
+    'ggforce',
+    'ggthemes',
+    'maps',
+    'sf',
+    'tidyr',
+    'concaveman',
+    'remotes')
+
+## Powinno śmigać - lecę dalej do lektury
+
+ggplot(data=mpg)+
+    geom_point(aes(x=displ,y=hwy))+
+    ggtitle("Cars with {closest_state} cylinders")+
+    transition_states(factor(cyl))
+    
+    # jeszcze inny przykład ggplot animate z punktami, teraz spróbuje coś wykombinować - uwaga uwaga 
+  
+  ggplot(data=mtcars)+
+    geom_point(aes(x=fuel,y=mass, color=hp))+
+    ggtitle("Cars with {closest_state} cylinders")+
+    transition_states(factor(cyl))+
+    theme_minimal()
+    
+    ## chyba ten najfajniejszy, no jak narazie jest gituwa
+    
+# Próba ćwiczenia jeszcze jednego 
+
+mpg2 <- tidyr::pivot_longer(mpg, c(cty,hwy))
+ggplot(mpg2) + 
+    geom_point(aes(x = displ, y = value)) + 
+    ggtitle("{if (closest_state == 'cty') 'Efficiency in city' else 'Efficiency on highway'}") + 
+    transition_states(name)
+    
+## zapisywanie plikiu 
+    
+animate(p1, nframes = 120,
+        renderer = gifski_renderer("p1_gdp.gif"))
+        
+        
+  
+## filtrowanie danych 
+
+filter(flights, month==1, day==1)
+
+# filtruje loty gdzie miesiąc wynosi 1 i dzien wynosi 1 - 1 stycznia
+
+ stycz1 <- filter(flights, month==1, day==1)
+ gru25 <- filter(flights, month== 12, day==25)
+ stycz_caly <- filter(flights, month==1)
+ 
+ 
+ # Tym razem styczen i grudzien na 2 sposoby, obywdwa dają te same wyniki 
+ 
+ styczen_grudzien <- filter(flights, month==12 | month==11)
+
+ styczen_grudzien_2 <- filter(flights, month %in% c(11,12)) 
+ 
+
+# filtrowanie cz2. 
